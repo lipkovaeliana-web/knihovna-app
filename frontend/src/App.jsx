@@ -1,6 +1,6 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BookList from "./components/Books/BookList";
-import './App.css'
+import "./App.css";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -9,7 +9,8 @@ function App() {
     async function fetchBooks() {
       const response = await fetch("http://127.0.0.1:8000/api/books/");
       const data = await response.json();
-      setBooks(data);
+      console.log(data);
+      setBooks(data.results);
     }
 
     fetchBooks();
@@ -17,10 +18,10 @@ function App() {
 
   return (
     <div>
-      <h1>Moje knihivna</h1>
+      <h1>Moje knihovna</h1>
       <BookList books={books} />
     </div>
   );
-}         
+}
 
 export default App;
