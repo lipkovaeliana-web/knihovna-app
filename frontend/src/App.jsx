@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddBookForm from "./components/Books/AddBookForm";
 import BookList from "./components/Books/BookList";
 import "./App.css";
 
@@ -15,10 +16,14 @@ function App() {
 
     fetchBooks();
   }, []);
+  const handleAddBook = (book) => {
+    setBooks([...books, book]); 
+  };
 
   return (
     <div>
       <h1>Moje knihovna</h1>
+      <AddBookForm onAddBook={handleAddBook} />
       <BookList books={books} />
     </div>
   );
