@@ -6,7 +6,8 @@ function BookList({ books }) {
   return (
     <div>
       {books.map((book) => (
-        <BookItem key={book.id} book={book} />
+        <BookItem key={book.id} book={book} onSelectBook={onSelectBook} />
+
       ))}
     </div>
   );

@@ -1,6 +1,11 @@
-function BookItem({ book }) {
+function BookItem({ book, onSelectBook }) {
+
   return (
-    <div>
+    <div 
+      onClick={() => onSelectBook(book)}
+      style={{ cursor: "pointer" }}
+
+      >
       <h2>{book.name}</h2>
 
       <p>
