@@ -1,7 +1,8 @@
 import BookItem from "./BookItem";
 
-function BookList({ books }) {
+function BookList({ books, onSelectBook }) {
   console.log(books);
+
 
   return (
     <div>

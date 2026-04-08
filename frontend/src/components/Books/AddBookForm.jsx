@@ -1,23 +1,28 @@
 import { useState } from "react";
 
-function AddBookForm({ onAddBook }) {
+function AddBookForm({ onAddBook, authors }) {
   const [name, setName] = useState("");
-  const [author, setAuthor] = useState("");
+  const [authorId, setAuthorId] = useState("");
   const [language, setLanguage] = useState("");
   const [isRead, setIsRead] = useState(false);
 
   const handleAddBook = (event) => {
     event.preventDefault();
 
+    if (!name || !authorId) {
+      alert("Vyplňte název knihy a vyberte autora.");
+      return;
+    }
+
     onAddBook({
       name,
-      author,
+      author_ids: [Number(authorId)],
       language,
       is_read: isRead,
     });
 
     setName("");
-    setAuthor("");
+    setAuthorId("");
     setLanguage("");
     setIsRead(false);
   };
@@ -34,12 +39,17 @@ function AddBookForm({ onAddBook }) {
       </div>
 
       <div>
-        <input
-          type="text"
-          placeholder="Autor"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-        />
+        <select
+          value={authorId}
+          onChange={(e) => setAuthorId(e.target.value)}
+        >
+          <option value="">Vyberte autora</option>
+          {authors.map((author) => (
+            <option key={author.id} value={author.id}>
+              {author.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
