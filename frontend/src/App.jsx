@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AddBookForm from "./components/Books/AddBookForm";
 import BookList from "./components/Books/BookList";
+import EditBookForm from "./components/Books/EditBookForm";
 import "./App.css";
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [authors, setAuthors] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     async function fetchBooks() {
@@ -68,6 +70,51 @@ function App() {
 
   const handleSelectBook = (book) => {
     setSelectedBook(book);
+    setIsEditing(false);
+  };
+
+  const handleDeleteBook = async (id) => {
+    const response = await fetch(`http://localhost:8000/api/books/${id}/`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      alert("Chyba při mazání knihy");
+      return;
+    }
+
+    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+
+    if (selectedBook?.id === id) {
+      setSelectedBook(null);
+      setIsEditing(false);
+    }
+  };
+
+  const handleUpdateBook = async (updatedBook) => {
+    const response = await fetch(
+      `http://localhost:8000/api/books/${updatedBook.id}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedBook),
+      }
+    );
+
+    if (!response.ok) {
+      alert("Chyba při aktualizaci knihy");
+      return;
+    }
+
+    const updated = await response.json();
+
+    setBooks((prevBooks) =>
+      prevBooks.map((book) => (book.id === updated.id ? updated : book))
+    );
+    setSelectedBook(updated);
+    setIsEditing(false);
   };
 
   return (
@@ -79,10 +126,17 @@ function App() {
       </button>
 
       {showForm && (
-        <AddBookForm authors={authors} onAddBook={handleAddBook} />
+        <AddBookForm
+          authors={authors}
+          onAddBook={handleAddBook}
+        />
       )}
 
-      <BookList books={books} onSelectBook={handleSelectBook} />
+      <BookList
+        books={books}
+        onSelectBook={handleSelectBook}
+        onDeleteBook={handleDeleteBook}
+      />
 
       {nextPage && <button onClick={handleNextPage}>Načíst další</button>}
 
@@ -95,7 +149,20 @@ function App() {
           </p>
           <p>Jazyk: {selectedBook.language}</p>
           <p>{selectedBook.is_read ? "Přečteno" : "Nepřečteno"}</p>
+
+          <button onClick={() => setIsEditing(true)}>
+            ✏️ Upravit
+          </button>
         </div>
+      )}
+
+      {isEditing && selectedBook && (
+        <EditBookForm
+          book={selectedBook}
+          authors={authors}
+          onUpdateBook={handleUpdateBook}
+          onCancel={() => setIsEditing(false)}
+        />
       )}
     </div>
   );
