@@ -1,6 +1,6 @@
 import BookItem from "./BookItem";
 
-function BookList({ books, onSelectBook, onDeleteBook }) {
+function BookList({ books, onSelectBook, onDeleteBook, onToggleRead }) {
   console.log(books);
 
 
@@ -12,6 +12,7 @@ function BookList({ books, onSelectBook, onDeleteBook }) {
         book={book} 
         onSelectBook={onSelectBook}
         onDeleteBook={onDeleteBook}
+        onToggleRead={onToggleRead}
         />
 
       ))}

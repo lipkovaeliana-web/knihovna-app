@@ -116,6 +116,33 @@ function App() {
     setSelectedBook(updated);
     setIsEditing(false);
   };
+  const handleToggleRead = async (book) => {
+    const response = await fetch(
+      `http://localhost:8000/api/books/${book.id}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+           is_read: !book.is_read 
+          }),
+      }
+    );
+
+    if (!response.ok) {
+      alert("Chyba při změně statusu knihy");
+      return;
+    }
+    const updated = await response.json();
+
+    setBooks((prevBooks) =>
+      prevBooks.map((item) => (item.id === updated.id ? updated : item))
+    );
+    if (selectedBook?.id === updated.id) {
+      setSelectedBook(updated);
+    }
+  };
 
   return (
     <div>
@@ -136,6 +163,7 @@ function App() {
         books={books}
         onSelectBook={handleSelectBook}
         onDeleteBook={handleDeleteBook}
+        onToggleRead={handleToggleRead}
       />
 
       {nextPage && <button onClick={handleNextPage}>Načíst další</button>}

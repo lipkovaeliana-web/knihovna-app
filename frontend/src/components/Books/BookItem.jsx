@@ -1,4 +1,4 @@
-function BookItem({ book, onSelectBook, onDeleteBook }) {
+function BookItem({ book, onSelectBook, onDeleteBook, onToggleRead }) {
 
   return (
     <div 
@@ -14,6 +14,15 @@ function BookItem({ book, onSelectBook, onDeleteBook }) {
 
       <p>
         <strong>Status:</strong> {book.is_read ? "Přečteno" : "Nepřečteno"}
+        <button
+          style={{ marginLeft: "10px" }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleRead(book);
+          }}
+        >
+          {book.is_read ? "Označit jako nepřečtené" : "Označit jako přečtené"}
+        </button>
       </p>
       <button
         style={{ marginTop: "10px", backgroundColor: "red", color: "white" }}
