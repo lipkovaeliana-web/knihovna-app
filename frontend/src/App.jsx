@@ -11,6 +11,8 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [authors, setAuthors] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterAuthor, setFilterAuthor] = useState("all");
 
   useEffect(() => {
     async function fetchBooks() {
@@ -116,6 +118,7 @@ function App() {
     setSelectedBook(updated);
     setIsEditing(false);
   };
+
   const handleToggleRead = async (book) => {
     const response = await fetch(
       `http://localhost:8000/api/books/${book.id}/`,
@@ -125,8 +128,8 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-           is_read: !book.is_read 
-          }),
+          is_read: !book.is_read,
+        }),
       }
     );
 
@@ -134,15 +137,30 @@ function App() {
       alert("Chyba při změně statusu knihy");
       return;
     }
+
     const updated = await response.json();
 
     setBooks((prevBooks) =>
       prevBooks.map((item) => (item.id === updated.id ? updated : item))
     );
+
     if (selectedBook?.id === updated.id) {
       setSelectedBook(updated);
     }
   };
+
+  const filteredBooks = books.filter((book) => {
+    const matchesStatus =
+      filterStatus === "all" ||
+      (filterStatus === "read" && book.is_read) ||
+      (filterStatus === "unread" && !book.is_read);
+
+    const matchesAuthor =
+      filterAuthor === "all" ||
+      book.author?.some((author) => String(author.id) === filterAuthor);
+
+    return matchesStatus && matchesAuthor;
+  });
 
   return (
     <div>
@@ -159,8 +177,37 @@ function App() {
         />
       )}
 
+      <div style={{ margin: "20px 0" }}>
+        <label>
+          Status:{" "}
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="all">Vše</option>
+            <option value="read">Přečtené</option>
+            <option value="unread">Nepřečtené</option>
+          </select>
+        </label>
+
+        <label style={{ marginLeft: "20px" }}>
+          Autor:{" "}
+          <select
+            value={filterAuthor}
+            onChange={(e) => setFilterAuthor(e.target.value)}
+          >
+            <option value="all">Všichni autoři</option>
+            {authors.map((author) => (
+              <option key={author.id} value={String(author.id)}>
+                {author.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       <BookList
-        books={books}
+        books={filteredBooks}
         onSelectBook={handleSelectBook}
         onDeleteBook={handleDeleteBook}
         onToggleRead={handleToggleRead}
