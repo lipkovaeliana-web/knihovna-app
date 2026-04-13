@@ -12,7 +12,8 @@ class BookSerializer(serializers.ModelSerializer):
     author_ids = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Author.objects.all(),
-        write_only=True
+        write_only=True,
+        source='author'
     )
 
     class Meta:

@@ -15,16 +15,28 @@ function App() {
   const [filterAuthor, setFilterAuthor] = useState("all");
 
   useEffect(() => {
-    async function fetchBooks() {
-      const response = await fetch("http://localhost:8000/api/books/");
-      const data = await response.json();
-      console.log(data);
-      setBooks(data.results);
-      setNextPage(data.next);
+  async function fetchBooks() {
+    let url = "http://localhost:8000/api/books/?";
+
+    if (filterStatus === "read") {
+      url += "is_read=true&";
+    } else if (filterStatus === "unread") {
+      url += "is_read=false&";
     }
 
-    fetchBooks();
-  }, []);
+    if (filterAuthor !== "all") {
+      url += `author=${filterAuthor}&`;
+    }
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    setBooks(data.results);
+    setNextPage(data.next);
+  }
+
+  fetchBooks();
+}, [filterStatus, filterAuthor]);
 
   useEffect(() => {
     async function fetchAuthors() {
@@ -149,19 +161,6 @@ function App() {
     }
   };
 
-  const filteredBooks = books.filter((book) => {
-    const matchesStatus =
-      filterStatus === "all" ||
-      (filterStatus === "read" && book.is_read) ||
-      (filterStatus === "unread" && !book.is_read);
-
-    const matchesAuthor =
-      filterAuthor === "all" ||
-      book.author?.some((author) => String(author.id) === filterAuthor);
-
-    return matchesStatus && matchesAuthor;
-  });
-
   return (
     <div>
       <h1>Moje knihovna</h1>
@@ -207,7 +206,7 @@ function App() {
       </div>
 
       <BookList
-        books={filteredBooks}
+        books={books}
         onSelectBook={handleSelectBook}
         onDeleteBook={handleDeleteBook}
         onToggleRead={handleToggleRead}
