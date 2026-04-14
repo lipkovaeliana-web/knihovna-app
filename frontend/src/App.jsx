@@ -15,28 +15,28 @@ function App() {
   const [filterAuthor, setFilterAuthor] = useState("all");
 
   useEffect(() => {
-  async function fetchBooks() {
-    let url = "http://localhost:8000/api/books/?";
+    async function fetchBooks() {
+      let url = "http://localhost:8000/api/books/?";
 
-    if (filterStatus === "read") {
-      url += "is_read=true&";
-    } else if (filterStatus === "unread") {
-      url += "is_read=false&";
+      if (filterStatus === "read") {
+        url += "is_read=true&";
+      } else if (filterStatus === "unread") {
+        url += "is_read=false&";
+      }
+
+      if (filterAuthor !== "all") {
+        url += `author=${filterAuthor}&`;
+      }
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      setBooks(data.results);
+      setNextPage(data.next);
     }
 
-    if (filterAuthor !== "all") {
-      url += `author=${filterAuthor}&`;
-    }
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    setBooks(data.results);
-    setNextPage(data.next);
-  }
-
-  fetchBooks();
-}, [filterStatus, filterAuthor]);
+    fetchBooks();
+  }, [filterStatus, filterAuthor]);
 
   useEffect(() => {
     async function fetchAuthors() {
@@ -162,12 +162,17 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>Moje knihovna</h1>
+    <div className="container py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="mb-0">📚 Moje knihovna</h1>
 
-      <button onClick={() => setShowForm(!showForm)}>
-        ➕ Přidat knihu
-      </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => setShowForm(!showForm)}
+        >
+          ➕ Přidat knihu
+        </button>
+      </div>
 
       {showForm && (
         <AddBookForm
@@ -176,10 +181,11 @@ function App() {
         />
       )}
 
-      <div style={{ margin: "20px 0" }}>
-        <label>
-          Status:{" "}
+      <div className="row mb-4">
+        <div className="col-md-4">
+          <label className="form-label">Status</label>
           <select
+            className="form-select"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -187,11 +193,12 @@ function App() {
             <option value="read">Přečtené</option>
             <option value="unread">Nepřečtené</option>
           </select>
-        </label>
+        </div>
 
-        <label style={{ marginLeft: "20px" }}>
-          Autor:{" "}
+        <div className="col-md-4">
+          <label className="form-label">Autor</label>
           <select
+            className="form-select"
             value={filterAuthor}
             onChange={(e) => setFilterAuthor(e.target.value)}
           >
@@ -202,7 +209,7 @@ function App() {
               </option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
 
       <BookList
@@ -212,21 +219,37 @@ function App() {
         onToggleRead={handleToggleRead}
       />
 
-      {nextPage && <button onClick={handleNextPage}>Načíst další</button>}
+      {nextPage && (
+        <button className="btn btn-outline-primary mt-3" onClick={handleNextPage}>
+          Načíst další
+        </button>
+      )}
 
       {selectedBook && (
-        <div>
-          <h2>Detail knihy</h2>
-          <p>Název: {selectedBook.name}</p>
-          <p>
-            Autor: {selectedBook.author?.map((author) => author.name).join(", ")}
-          </p>
-          <p>Jazyk: {selectedBook.language}</p>
-          <p>{selectedBook.is_read ? "Přečteno" : "Nepřečteno"}</p>
+        <div className="card mt-4">
+          <div className="card-body">
+            <h5 className="card-title">{selectedBook.name}</h5>
 
-          <button onClick={() => setIsEditing(true)}>
-            ✏️ Upravit
-          </button>
+            <p className="card-text">
+              <strong>Autor:</strong>{" "}
+              {selectedBook.author?.map((a) => a.name).join(", ")}
+            </p>
+
+            <p className="card-text">
+              <strong>Jazyk:</strong> {selectedBook.language}
+            </p>
+
+            <p className="card-text">
+              {selectedBook.is_read ? "Přečteno" : "Nepřečteno"}
+            </p>
+
+            <button
+              className="btn btn-warning"
+              onClick={() => setIsEditing(true)}
+            >
+              ✏️ Upravit
+            </button>
+          </div>
         </div>
       )}
 
