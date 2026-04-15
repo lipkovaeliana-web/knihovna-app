@@ -39,14 +39,6 @@ class Book(models.Model):
     author = models.ManyToManyField(Author)
     genre = models.ManyToManyField(Genre, blank=True)
 
-
-for book in Book.objects.all():
-    if book.language == 'CZ':
-        book.language = 'cs'
-    elif book.language == 'AJ':
-        book.language = 'en'
-    book.save()
-
     def __str__(self):
         return self.name
 

@@ -1,9 +1,14 @@
-import csv
 import os
-import django
+import sys
+from pathlib import Path
+import csv
 
-os.environ.setdefault(
-    'DJANGO_SETTINGS_MODULE',"knihovna.settings")
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BASE_DIR / "knihovna"))
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "knihovna.settings")
+
+import django
 django.setup()
 
 from books.models import Book, Author
