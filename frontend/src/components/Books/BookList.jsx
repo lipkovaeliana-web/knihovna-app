@@ -4,9 +4,9 @@ function BookList({ books, onSelectBook, onDeleteBook, onToggleRead }) {
   console.log(books);
 
   return (
-    <div className="row mt-4">
+    <div className="row">
       {books.map((book) => (
-        <div key={book.id} className="col-md-6 col-lg-4">
+        <div key={book.id} className="col-12 col-md-6 col-xl-4">
           <BookItem 
             book={book} 
             onSelectBook={onSelectBook}

@@ -1,14 +1,13 @@
 function BookItem({ book, onSelectBook, onDeleteBook, onToggleRead }) {
   return (
     <div
-      className="card mb-3 h-100"
+      className="card h-100 shadow-sm"
       onClick={() => onSelectBook(book)}
       style={{ cursor: "pointer" }}
     >
-      <div className="card-body">
+      <div className="card-body d-flex flex-column">
         <h5 className="card-title">{book.name}</h5>
 
-        {/* 👇 AUTOR */}
         <p className="card-text">
           <strong>Autor:</strong>{" "}
           {book.author?.map((author) => author.name).join(", ")}
@@ -20,28 +19,44 @@ function BookItem({ book, onSelectBook, onDeleteBook, onToggleRead }) {
 
         <p className="card-text">
           <strong>Status:</strong>{" "}
-          {book.is_read ? "Přečteno" : "Nepřečteno"}
+          {book.is_read ? (
+            <span className="badge bg-success">Přečteno</span>
+          ) : (
+            <span className="badge bg-secondary">Nepřečteno</span>
+          )}
         </p>
 
-        <button
-          className="btn btn-success me-2"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleRead(book);
-          }}
-        >
-          {book.is_read ? "Nepřečteno" : "Přečteno"}
-        </button>
+        <div className="mt-auto d-flex gap-2">
+          <button
+            className="btn btn-outline-primary btn-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectBook(book);
+            }}
+          >
+            Detail
+          </button>
 
-        <button
-          className="btn btn-danger"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteBook(book.id);
-          }}
-        >
-          🗑️ Smazat
-        </button>
+          <button
+            className="btn btn-outline-success btn-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleRead(book);
+            }}
+          >
+            {book.is_read ? "Nepřečteno" : "Přečteno"}
+          </button>
+
+          <button
+            className="btn btn-outline-danger btn-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteBook(book.id);
+            }}
+          >
+            🗑️ Smazat
+          </button>
+        </div>
       </div>
     </div>
   );

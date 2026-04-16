@@ -13,6 +13,7 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterAuthor, setFilterAuthor] = useState("all");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function fetchBooks() {
@@ -85,6 +86,7 @@ function App() {
   const handleSelectBook = (book) => {
     setSelectedBook(book);
     setIsEditing(false);
+    setShowModal(true);
   };
 
   const handleDeleteBook = async (id) => {
@@ -102,6 +104,7 @@ function App() {
     if (selectedBook?.id === id) {
       setSelectedBook(null);
       setIsEditing(false);
+      setShowModal(false);
     }
   };
 
@@ -161,56 +164,67 @@ function App() {
     }
   };
 
-  return (
-    <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="mb-0">📚 Moje knihovna</h1>
+ return (
+  <>
+    <header className="app-header">
+      <div className="app-header-inner">
+        <div className="app-brand">
+          <div className="app-logo"></div>
+
+          <div className="app-brand-text">
+            <h1 className="app-brand-title">Moje knihovna</h1>
+            <p className="app-brand-subtitle">
+              OSOBNÍ KNIHOVNA A PŘEHLED ČETBY
+            </p>
+          </div>
+        </div>
 
         <button
-          className="btn btn-primary"
+          className="btn app-add-btn"
           onClick={() => setShowForm(!showForm)}
         >
           ➕ Přidat knihu
         </button>
       </div>
+    </header>
 
+    <main className="container py-4 app-main">
       {showForm && (
         <AddBookForm
           authors={authors}
           onAddBook={handleAddBook}
         />
       )}
+<div className="d-flex justify-content-center gap-4 mb-4 flex-wrap">
+  <div className="filter-group">
+    <label className="form-label fw-bold">Status</label>
+    <select
+      className="form-select"
+      value={filterStatus}
+      onChange={(e) => setFilterStatus(e.target.value)}
+    >
+      <option value="all">Vše</option>
+      <option value="read">Přečtené</option>
+      <option value="unread">Nepřečtené</option>
+    </select>
+  </div>
 
-      <div className="row mb-4">
-        <div className="col-md-4">
-          <label className="form-label">Status</label>
-          <select
-            className="form-select"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">Vše</option>
-            <option value="read">Přečtené</option>
-            <option value="unread">Nepřečtené</option>
-          </select>
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label">Autor</label>
-          <select
-            className="form-select"
-            value={filterAuthor}
-            onChange={(e) => setFilterAuthor(e.target.value)}
-          >
-            <option value="all">Všichni autoři</option>
-            {authors.map((author) => (
-              <option key={author.id} value={String(author.id)}>
-                {author.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+  <div className="filter-group">
+    <label className="form-label fw-bold">Autor</label>
+    <select
+      className="form-select"
+      value={filterAuthor}
+      onChange={(e) => setFilterAuthor(e.target.value)}
+    >
+      <option value="all">Všichni autoři</option>
+      {authors.map((author) => (
+        <option key={author.id} value={String(author.id)}>
+          {author.name}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
 
       <BookList
         books={books}
@@ -220,37 +234,12 @@ function App() {
       />
 
       {nextPage && (
-        <button className="btn btn-outline-primary mt-3" onClick={handleNextPage}>
+        <button
+          className="btn btn-outline-primary mt-3"
+          onClick={handleNextPage}
+        >
           Načíst další
         </button>
-      )}
-
-      {selectedBook && (
-        <div className="card mt-4">
-          <div className="card-body">
-            <h5 className="card-title">{selectedBook.name}</h5>
-
-            <p className="card-text">
-              <strong>Autor:</strong>{" "}
-              {selectedBook.author?.map((a) => a.name).join(", ")}
-            </p>
-
-            <p className="card-text">
-              <strong>Jazyk:</strong> {selectedBook.language}
-            </p>
-
-            <p className="card-text">
-              {selectedBook.is_read ? "Přečteno" : "Nepřečteno"}
-            </p>
-
-            <button
-              className="btn btn-warning"
-              onClick={() => setIsEditing(true)}
-            >
-              ✏️ Upravit
-            </button>
-          </div>
-        </div>
       )}
 
       {isEditing && selectedBook && (
@@ -261,8 +250,72 @@ function App() {
           onCancel={() => setIsEditing(false)}
         />
       )}
-    </div>
-  );
+
+      {showModal && selectedBook && (
+        <div
+          className="modal show fade d-block"
+          tabIndex="-1"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{selectedBook.name}</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <p>
+                  <strong>Autor:</strong>{" "}
+                  {selectedBook.author?.map((a) => a.name).join(", ")}
+                </p>
+
+                <p>
+                  <strong>Jazyk:</strong> {selectedBook.language}
+                </p>
+
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {selectedBook.is_read ? "Přečteno" : "Nepřečteno"}
+                </p>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowModal(false)}
+                >
+                  Zavřít
+                </button>
+
+                <button
+                  className="btn btn-warning"
+                  onClick={() => {
+                    setShowModal(false);
+                    setIsEditing(true);
+                  }}
+                >
+                  ✏️ Upravit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+
+    <footer className="app-footer">
+      <p>© 2026 Eliana Lipková</p>
+    </footer>
+  </>
+);
 }
 
 export default App;
