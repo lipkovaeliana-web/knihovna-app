@@ -188,7 +188,7 @@ function App() {
       </div>
     </header>
 
-    <main className="container py-4 app-main">
+    <main className="container p-2 app-main">
       {showForm && (
         <AddBookForm
           authors={authors}
@@ -311,9 +311,18 @@ function App() {
       )}
     </main>
 
-    <footer className="app-footer">
-      <p>© 2026 Eliana Lipková</p>
-    </footer>
+   <footer className="app-footer">
+  <p>© 2026 Eliana Lipková</p>
+  <div className="app-footer-links">
+    <a
+      href="https://www.elianalipkova.cz/kontakt.html"
+      target="_blank"
+      rel="noreferrer"
+    >
+      Kontaktuj mě
+    </a>
+  </div>
+</footer>
   </>
 );
 }
