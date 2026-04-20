@@ -31,5 +31,6 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
-    queryset = Author.objects.all()
+    queryset = Author.objects.all().order_by("name")
     serializer_class = serializers.AuthorSerializer
+    pagination_class = None
