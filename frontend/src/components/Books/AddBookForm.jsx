@@ -1,19 +1,29 @@
 import { useState } from "react";
 
 function AddBookForm({ onAddBook, authors }) {
+  // Form state for book title
   const [name, setName] = useState("");
+
+  // Selected author ID
   const [authorId, setAuthorId] = useState("");
+
+  // Selected book language
   const [language, setLanguage] = useState("");
+
+  // Read / unread status
   const [isRead, setIsRead] = useState(false);
 
   const handleAddBook = (event) => {
+    // Prevent page reload after form submit
     event.preventDefault();
 
-    if (!name || !authorId) {
-      alert("Vyplňte název knihy a vyberte autora.");
+    // Validate required fields
+    if (!name || !authorId || !language) {
+      alert("Vyplňte všechna požadovaná pole.");
       return;
     }
 
+    // Send new book data to parent component
     onAddBook({
       name,
       author_ids: [Number(authorId)],
@@ -21,6 +31,7 @@ function AddBookForm({ onAddBook, authors }) {
       is_read: isRead,
     });
 
+    // Reset form fields after submit
     setName("");
     setAuthorId("");
     setLanguage("");
@@ -44,6 +55,7 @@ function AddBookForm({ onAddBook, authors }) {
           onChange={(e) => setAuthorId(e.target.value)}
         >
           <option value="">Vyberte autora</option>
+          {/* Display available authors in dropdown */}
           {authors.map((author) => (
             <option key={author.id} value={author.id}>
               {author.name}
@@ -52,13 +64,15 @@ function AddBookForm({ onAddBook, authors }) {
         </select>
       </div>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Jazyk"
+     <div>
+        <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-        />
+        >
+          <option value="">Select language</option>
+          <option value="cs">Čeština</option>
+          <option value="en">English</option>
+        </select>
       </div>
 
       <div>
