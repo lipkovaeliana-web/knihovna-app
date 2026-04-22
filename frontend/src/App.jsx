@@ -4,7 +4,7 @@ import BookList from "./components/Books/BookList";
 import EditBookForm from "./components/Books/EditBookForm";
 import "./App.css";
 
-
+const API_BASE_URL = "https://knihovna-backend.onrender.com";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -28,7 +28,7 @@ function App() {
       setError("");
 
       try {
-        let url = "http://localhost:8000/api/books/?";
+        let url = `${API_BASE_URL}/api/books/?`;
 
         // Filter by read / unread status
         if (filterStatus === "read") {
@@ -76,7 +76,7 @@ function App() {
   useEffect(() => {
     async function fetchAuthors() {
       try {
-        const response = await fetch("http://localhost:8000/api/authors/");
+        const response = await fetch(`${API_BASE_URL}/api/authors/`);
 
         if (!response.ok) {
           throw new Error("Failed to load authors.");
@@ -102,7 +102,7 @@ function App() {
       return;
     }
 
-    const response = await fetch("http://localhost:8000/api/books/", {
+    const response = await fetch(`${API_BASE_URL}/api/books/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,7 +168,7 @@ function App() {
 
   // Delete selected book
   const handleDeleteBook = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/books/${id}/`, {
+    const response = await fetch(`${API_BASE_URL}/api/books/${id}/`, {
       method: "DELETE",
     });
 
@@ -189,7 +189,7 @@ function App() {
   // Update existing book
   const handleUpdateBook = async (updatedBook) => {
     const response = await fetch(
-      `http://localhost:8000/api/books/${updatedBook.id}/`,
+      `${API_BASE_URL}/api/books/${updatedBook.id}/`,
       {
         method: "PATCH",
         headers: {
@@ -216,7 +216,7 @@ function App() {
   // Toggle read / unread status
   const handleToggleRead = async (book) => {
     const response = await fetch(
-      `http://localhost:8000/api/books/${book.id}/`,
+      `${API_BASE_URL}/api/books/${book.id}/`,
       {
         method: "PATCH",
         headers: {
