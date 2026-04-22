@@ -16,9 +16,10 @@ SECRET_KEY = 'django-insecure-^#s910q+tf*=!=an_8rmkp!2lu+^%*m6f#_kp#=%or6t*)s!j9
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
+    "knihovna-backend.onrender.com",
+    "knihovna.elianalipkova.cz",
     "localhost",
-    ".onrender.com",
+    "127.0.0.1",
 ]
 
 
