@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AddBookForm({ onAddBook, authors }) {
+function AddBookForm({ onAddBook, authors, onCancel }) {
   // Form state for book title
   const [name, setName] = useState("");
 
