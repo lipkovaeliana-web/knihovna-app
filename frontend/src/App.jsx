@@ -270,7 +270,7 @@ function App() {
 
       <main className="container p-2 app-main">
         {/* Add new book form */}
-        {showForm && <AddBookForm authors={authors} onAddBook={handleAddBook} />}
+        {showForm && <AddBookForm authors={authors} onAddBook={handleAddBook} onCancel={() => setShowForm(false)} />}
 
         {/* Filter section */}
         <div className="d-flex justify-content-center gap-4 mb-4 flex-wrap">

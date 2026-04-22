@@ -87,6 +87,9 @@ function AddBookForm({ onAddBook, authors }) {
       </div>
 
       <button type="submit">Přidat knihu</button>
+      <button type="button" onClick={onCancel}>
+        Zrušit
+      </button>
     </form>
   );
 }
